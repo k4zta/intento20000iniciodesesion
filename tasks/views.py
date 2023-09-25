@@ -7,16 +7,17 @@ def iniciar_sesion(request):
     if request.method == 'POST':
         codigo_estudiante = request.POST['codigo_estudiante']
         password = request.POST['password']
-        user = authenticate(request, codigo_estudiante=codigo_estudiante, password=password)
-        print(user)
-        print(codigo_estudiante)
-        print(password)
-        if user is not None:
-            login(request, user)
-            return redirect('inicio')  # Reemplaza 'inicio' con la URL de tu página principal
-        else:
+        registros = Estudiante.objects.all()
+        for registro in registros:
+            print(registro.password,registro.codigo_estudiante)
+            if registro.codigo_estudiante==codigo_estudiante and registro.password==password:
+                print(registro.codigo_estudiante,registro.password)
+                print(codigo_estudiante)
+                print(password)
+                return render(request,'home.html')  # Reemplaza 'inicio' con la URL de tu página principal
+            else:
             # Autenticación fallida, muestra un mensaje de error
-            return render(request, 'login.html', {'error_message': 'Código de estudiante o contraseña incorrectos.'})
+                return render(request, 'login.html', {'error_message': 'Código de estudiante o contraseña incorrectos.'})
     else:
         return render(request, 'login.html')
     
